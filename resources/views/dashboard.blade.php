@@ -73,6 +73,96 @@
                 </form>
             </div>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
+                <h2 class="text-xl font-bold mb-6">@lang('Set recurring transfers')</h2>
+                <form method="POST" action="{{ route('set-recurring-transfers') }}" class="space-y-4">
+                    @csrf
+
+                    @if (session('recurring-transfers-status') === 'success')
+                        <div class="p-4 text-sm text-green-800 rounded-lg bg-green-50" role="alert">
+                            <span class="font-medium">@lang('Recurring transfer is set!')</span>
+                            @lang(':amount will be sent every :frequency days to :name.', ['amount' => Number::currencyCents(session('recurring-transfers-amount', 0)), 'name' => session('recurring-transfers-recipient-name'), 'frequency' => session('recurring-transfers-frequency')])
+                        </div>
+                    @elseif (!empty(session('recurring-transfers-status')))
+                        <div class="p-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                            <span class="font-medium">@lang('Unknown error!')</span>
+                        </div>
+                    @endif
+
+                    <div>
+                        <x-input-label for="start_date" :value="__('Start date')" />
+                        <x-text-input id="start_date"
+                                      class="block mt-1 w-full"
+                                      type="date"
+                                      name="start_date"
+                                      :value="old('start_date')"
+                                      required />
+                        <x-input-error :messages="$errors->get('start_date')" class="mt-2" />
+                    </div>
+                    <div>
+                        <x-input-label for="end_date" :value="__('End date')" />
+                        <x-text-input id="end_date"
+                                      class="block mt-1 w-full"
+                                      type="date"
+                                      name="end_date"
+                                      :value="old('end_date')"
+                                      required />
+                        <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <x-input-label for="frequency" :value="__('Frequency (in days)')" />
+                        <x-text-input id="frequency"
+                                      class="block mt-1 w-full"
+                                      type="number"
+                                      min="1"
+                                      step="1"
+                                      :value="old('frequency')"
+                                      name="frequency"
+                                      required />
+                        <x-input-error :messages="$errors->get('frequency')" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <x-input-label for="recipient_email" :value="__('Recipient email')" />
+                        <x-text-input id="recipient_email"
+                                      class="block mt-1 w-full"
+                                      type="email"
+                                      name="recipient_email"
+                                      :value="old('recipient_email')"
+                                      required />
+                        <x-input-error :messages="$errors->get('recipient_email')" class="mt-2" />
+                    </div>
+                    <div>
+                        <x-input-label for="amount" :value="__('Amount (€)')" />
+                        <x-text-input id="amount"
+                                      class="block mt-1 w-full"
+                                      type="number"
+                                      min="0"
+                                      step="0.01"
+                                      :value="old('amount')"
+                                      name="amount"
+                                      required />
+                        <x-input-error :messages="$errors->get('amount')" class="mt-2" />
+                    </div>
+                    <div>
+                        <x-input-label for="reason" :value="__('Reason')" />
+                        <x-text-input id="reason"
+                                      class="block mt-1 w-full"
+                                      type="text"
+                                      :value="old('reason')"
+                                      name="reason"
+                                      required />
+                        <x-input-error :messages="$errors->get('reason')" class="mt-2" />
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <x-primary-button>
+                            {{ __('Set recurring transfers') }}
+                        </x-primary-button>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
                 <h2 class="text-xl font-bold mb-6">@lang('Transactions history')</h2>
                 <table class="w-full text-sm text-left text-gray-500 border border-gray-200">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
