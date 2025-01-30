@@ -27,6 +27,21 @@ class WalletFactory extends Factory
         ]);
     }
 
+    public function lowBalanceGuy(): static
+    {
+        return $this
+            ->state(fn (array $attributes) => [
+                'balance' => 5000,
+            ])
+            ->has(
+                WalletTransaction::factory()
+                    ->amount(5000)
+                    ->credit()
+                    ->reason('Initial balance'),
+                'transactions'
+            );
+    }
+
     public function richChillGuy(): static
     {
         return $this

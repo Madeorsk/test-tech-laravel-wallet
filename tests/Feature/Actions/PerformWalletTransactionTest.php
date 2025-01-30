@@ -88,3 +88,15 @@ test('force a debit transaction when balance is insufficient', function () {
         'reason' => 'test',
     ]);
 });
+
+test("send a notification email when balance is low", function () {
+    \Illuminate\Support\Facades\Event::fake();
+
+    $wallet = Wallet::factory()->forUser()->lowBalanceGuy()->create();
+
+    $this->action->execute($wallet, WalletTransactionType::DEBIT, 4100, 'test');
+
+    expect($wallet->balance)->toBe(900);
+
+    \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\LowBalanceEvent::class);
+});

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\WalletTransactionType;
+use App\Events\LowBalanceEvent;
 use App\Exceptions\InsufficientBalance;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
@@ -32,6 +33,10 @@ readonly class PerformWalletTransaction
             ]);
 
             $this->updateWallet($wallet, $type, $amount);
+
+            if ($wallet->balance < 1000) {
+                event(new LowBalanceEvent($wallet));
+            }
 
             return $transaction;
         });
